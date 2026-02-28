@@ -1,0 +1,60 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>
+
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+                &kp F1   &kp F5   &kp F9
+                &kp F2   &kp F6   &kp F10
+                &kp F3   &kp F7   &kp F11
+                &kp F4   &kp F8   &kp F12  &enc_l  &enc_r  &kp UP
+            >;  // 4x4: top 3 rows F-keys, bottom: F4/F8/F12 | left enc | right enc | up (adjust cols if needed)
+        };
+
+        // Sensor bindings for encoders (add to shield or keymap-sensors if not present)
+        sensor_bindings {
+            compatible = "zmk,keymap-sensors";
+            encoder_left: encoder_left {
+                sensor-bindings = < &kp C_VOL_UP  &kp C_VOL_DN >;
+            };
+            encoder_right: encoder_right {
+                sensor-bindings = < &kp C_MPRV  &kp C_MNXT >;
+            };
+        };
+
+        // Behaviors for encoder presses (hold-tap style for push)
+        behaviors {
+            enc_vol: enc_vol {
+                compatible = "zmk,behavior-hold-tap";
+                #binding-cells = <0>;
+                tapping-term-ms = <200>;
+                hold-preferred;
+                tapping-toggles-layer;
+                hold-trigger-key-positions;
+                hold = < &kp MUTE >;
+                tap = < &trans >;  // Transparent tap for underlying key if needed
+            };
+            enc_play: enc_play {
+                compatible = "zmk,behavior-hold-tap";
+                #binding-cells = <0>;
+                tapping-term-ms = <200>;
+                hold-preferred;
+                tapping-toggles-layer;
+                hold-trigger-key-positions;
+                hold = < &kp MPLY >;
+                tap = < &trans >;
+            };
+        };
+    };
+};
+
